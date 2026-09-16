@@ -30,6 +30,9 @@
 #import "FSNodeRep.h"
 #import "FSNFunctions.h"
 
+/* Added in gnustep-base after 1.31.1; weak so we still link against older base */
+GS_EXPORT NSSet *GSLocalizedUserDirs() __attribute__((weak));
+
 static NSMutableSet *specialDirs; // cache of special directories in domains
 
 @implementation FSNode
@@ -144,7 +147,7 @@ static NSMutableSet *specialDirs; // cache of special directories in domains
           NSString *sysDir;
           NSSet *localizedUserDirs;
 
-          localizedUserDirs = GSLocalizedUserDirs();
+          localizedUserDirs = GSLocalizedUserDirs ? GSLocalizedUserDirs() : nil;
 
           if (specialDirs == nil)
             {
