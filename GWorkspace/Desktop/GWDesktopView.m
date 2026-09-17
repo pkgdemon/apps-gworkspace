@@ -1595,6 +1595,13 @@ static void GWHighlightFrameRect(NSRect aRect)
   return YES;
 }
 
+- (void)themeDidChange:(NSNotification *)notif
+{
+  /* The desktop has its own background colour; only refresh icons */
+  [self updateIcons];
+  [self setNeedsDisplay: YES];
+}
+
 - (void)setBackgroundColor:(NSColor *)acolor
 {
   [super setBackgroundColor: acolor];

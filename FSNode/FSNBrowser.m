@@ -164,6 +164,7 @@
     manager = nil;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(defaultsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(themeDidChange:) name:FSNodeRepThemeDidChangeNotification object:nil];
   }
   
   return self;
@@ -183,6 +184,22 @@
       [self setVisibleColumns:[self visibleColumns]];
     }
   }
+}
+
+- (void)themeDidChange:(NSNotification *)not
+{
+  NSUInteger i;
+
+  ASSIGN (backColor, [NSColor windowBackgroundColor]);
+
+  for (i = 0; i < [columns count]; i++)
+    {
+      FSNBrowserColumn *column = [columns objectAtIndex: i];
+
+      [column setBackgroundColor: backColor];
+      [column updateIcons];
+    }
+  [self setNeedsDisplay: YES];
 }
 
 - (void)setBaseNode:(FSNode *)node

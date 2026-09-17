@@ -69,6 +69,7 @@
   NSColor *textColor;
   NSColor *disabledTextColor;
   BOOL transparentSelection;
+  BOOL themeColors;     /* colours follow the GSTheme until set explicitly */
 
   FSNodeRep *fsnodeRep;
 

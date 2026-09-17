@@ -70,6 +70,7 @@
 
 - (void)dealloc
 {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   [self unsetWatchers];
   RELEASE (watchedPaths);
   RELEASE (icons);
@@ -185,10 +186,41 @@
     [focusedIconLabel setBackgroundColor: backColor];
     [focusedIconLabel setTextColor: [NSColor controlTextColor]];
     [focusedIconLabel setFrame: NSMakeRect(0, 0, 0, 14)];    
+
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector(themeDidChange:)
+                                                 name: FSNodeRepThemeDidChangeNotification
+                                               object: nil];
   }
   
   return self;
 }
+
+- (void)themeDidChange:(NSNotification *)notif
+{
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSUInteger i;
+
+  /* follow the theme unless the user chose explicit colours */
+  if ([defaults dictionaryForKey: @"backcolor"] == nil) {
+    ASSIGN (backColor, [[NSColor windowBackgroundColor] colorUsingColorSpaceName: NSDeviceRGBColorSpace]);
+  }
+  if ([defaults dictionaryForKey: @"textcolor"] == nil) {
+    ASSIGN (textColor, [[NSColor controlTextColor] colorUsingColorSpaceName: NSDeviceRGBColorSpace]);
+    ASSIGN (disabledTextColor, [textColor highlightWithLevel: NSDarkGray]);
+  }
+  [focusedIconLabel setBackgroundColor: backColor];
+
+  for (i = 0; i < [icons count]; i++) {
+    FSNIcon *icon = [icons objectAtIndex: i];
+
+    [icon setNode: [icon node]];
+    [icon setLabelTextColor: textColor];
+  }
+
+  [self setNeedsDisplay: YES];
+}
+
 
 - (void)setContents:(NSArray *)iconsInfo
 {

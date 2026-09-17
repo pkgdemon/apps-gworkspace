@@ -77,6 +77,8 @@ static FSNodeRep *shared = nil;
 @end
 
 
+NSString *FSNodeRepThemeDidChangeNotification = @"FSNodeRepThemeDidChangeNotification";
+
 @implementation FSNodeRep (PrivateMethods)
 
 + (void)initialize
@@ -268,6 +270,10 @@ static FSNodeRep *shared = nil;
   /* we clean the cache of theme-derived images */
   [iconsCache removeAllObjects];
   [self cacheIcons];
+
+  [[NSNotificationCenter defaultCenter]
+    postNotificationName: FSNodeRepThemeDidChangeNotification
+                  object: [FSNodeRep sharedInstance]];
 }
 
 @end
