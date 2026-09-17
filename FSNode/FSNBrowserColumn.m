@@ -1196,15 +1196,13 @@ static id <DesktopApplication> desktopApp = nil;
 
 - (void)updateIcons
 {
-  if (cellsIcon)
-    {
-      NSArray *cells = [matrix cells];
-      NSUInteger i;
+  NSArray *cells = [matrix cells];
+  NSUInteger i;
 
-      for (i = 0; i < [cells count]; i++)
-        {
-          [[cells objectAtIndex: i] setIcon];
-        }
+  /* cells show an icon whenever they have a node (see -setNode:) */
+  for (i = 0; i < [cells count]; i++)
+    {
+      [[cells objectAtIndex: i] setIcon];
     }
   [matrix setNeedsDisplay: YES];
 }
