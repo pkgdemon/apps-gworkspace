@@ -267,6 +267,18 @@ NSString *FSNodeRepThemeDidChangeNotification = @"FSNodeRepThemeDidChangeNotific
 
 - (void)themeDidActivate:(id)sender
 {
+  /* Refresh on the next run loop pass, once every observer of the theme
+   * change (e.g. NSWorkspace dropping its cached file icons) has run. */
+  [NSObject cancelPreviousPerformRequestsWithTarget: self
+                                           selector: @selector(refreshThemeIcons)
+                                             object: nil];
+  [self performSelector: @selector(refreshThemeIcons)
+             withObject: nil
+             afterDelay: 0];
+}
+
+- (void)refreshThemeIcons
+{
   /* we clean the cache of theme-derived images */
   [iconsCache removeAllObjects];
   [self cacheIcons];
