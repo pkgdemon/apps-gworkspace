@@ -1194,6 +1194,21 @@ static id <DesktopApplication> desktopApp = nil;
   [matrix setCellBackgroundColor: backColor];
 }
 
+- (void)updateIcons
+{
+  if (cellsIcon)
+    {
+      NSArray *cells = [matrix cells];
+      NSUInteger i;
+
+      for (i = 0; i < [cells count]; i++)
+        {
+          [[cells objectAtIndex: i] setIcon];
+        }
+    }
+  [matrix setNeedsDisplay: YES];
+}
+
 - (void)mouseUp:(NSEvent *)theEvent
 {
   NSPoint p = [theEvent locationInWindow];

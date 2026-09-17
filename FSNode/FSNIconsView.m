@@ -82,6 +82,7 @@ static void GWHighlightFrameRect(NSRect aRect)
 
 - (void)dealloc
 {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   RELEASE (node);
   RELEASE (extInfoType);
   RELEASE (icons);
@@ -127,6 +128,13 @@ static void GWHighlightFrameRect(NSRect aRect)
       ASSIGN (backColor, [NSColor windowBackgroundColor]);
       ASSIGN (textColor, [NSColor controlTextColor]);
       ASSIGN (disabledTextColor, [NSColor disabledControlTextColor]);
+      themeColors = YES;
+
+      [[NSNotificationCenter defaultCenter]
+        addObserver: self
+           selector: @selector(themeDidChange:)
+               name: FSNodeRepThemeDidChangeNotification
+             object: nil];
 
       defentry = [defaults objectForKey: @"iconsize"];
       iconSize = defentry ? [defentry intValue] : DEF_ICN_SIZE;
@@ -1920,8 +1928,22 @@ static void GWHighlightFrameRect(NSRect aRect)
   return YES;
 }
 
+- (void)themeDidChange:(NSNotification *)notif
+{
+  if (themeColors)
+    {
+      ASSIGN (disabledTextColor, [NSColor disabledControlTextColor]);
+      [self setBackgroundColor: [NSColor windowBackgroundColor]];
+      [self setTextColor: [NSColor controlTextColor]];
+      themeColors = YES;
+    }
+  [self updateIcons];
+  [self setNeedsDisplay: YES];
+}
+
 - (void)setBackgroundColor:(NSColor *)acolor
 {
+  themeColors = NO;
   ASSIGN (backColor, acolor);
   [[self window] setBackgroundColor: backColor];
   [self setNeedsDisplay: YES];
@@ -1935,6 +1957,8 @@ static void GWHighlightFrameRect(NSRect aRect)
 - (void)setTextColor:(NSColor *)acolor
 {
   NSUInteger i;
+
+  themeColors = NO;
 
   for (i = 0; i < [icons count]; i++)
     {

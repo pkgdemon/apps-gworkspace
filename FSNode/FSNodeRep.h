@@ -345,6 +345,11 @@ typedef enum FSNSelectionMask {
 @end
 
 
+/* Posted by FSNodeRep after a GSTheme change, once theme-derived icons have
+ * been re-cached. Views showing nodes observe it to refresh colours and icons.
+ */
+extern NSString *FSNodeRepThemeDidChangeNotification;
+
 @interface FSNodeRep : NSObject 
 {
   NSArray *extInfoModules;

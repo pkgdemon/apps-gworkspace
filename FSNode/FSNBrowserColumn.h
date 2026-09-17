@@ -164,6 +164,8 @@
 
 - (void)setBackgroundColor:(NSColor *)acolor;
 
+- (void)updateIcons;
+
 @end
 
 
